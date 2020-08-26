@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const HttpError = require('./models/http-error');
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
@@ -26,4 +27,13 @@ app.use((error, req, res, next) => {
 
 });
 
-app.listen(5000);
+mongoose
+  .connect('mongodb+srv://user:polik911sadrick@cluster0.cbx6a.mongodb.net/places?retryWrites=true&w=majority')
+  .then(() => {
+    app.listen(5000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
+
