@@ -2,10 +2,10 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const HttpError = require('../models/http-error');
 
-const  getUsers = async (req, res, next) => {
+const getUsers = async (req, res, next) => {
   let users;
   try {
-    users = await User.find({}, "email name");
+    users = await User.find({}, "email name places image");
   } catch (err) {
     const error = new HttpError('Fetching users faild, please try again later', 500 );
     return next(error);
