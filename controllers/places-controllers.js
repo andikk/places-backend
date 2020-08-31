@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 const getCoordsForAddress = require('../util/location');
@@ -63,7 +63,7 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+    image: req.file.path,
     creator
   });
 
@@ -141,6 +141,8 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
+  const imagePath = place.image;
+
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
@@ -152,6 +154,10 @@ const deletePlace = async (req, res, next) => {
     const error = new HttpError('Something went wrong, could not delete place', 500);
     return next(error);
   }
+
+  fs.unlink(imagePath, err => {
+    console.log(err);
+  });
 
   res.status(200).json({message: 'Place deleted'});
 };
